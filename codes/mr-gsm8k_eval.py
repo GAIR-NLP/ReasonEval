@@ -16,46 +16,35 @@ def calculate_f1_score(correct_true_num, total_true_num, total_false_num, correc
 
 
 def get_results():
-    test_set_filepath = './dataset/MR-GSM8K.json'
+    test_set_filepath = './dataset/mr-gsm8k.json'
     test_dataset = []
     with open(test_set_filepath) as f:
         for line in f:
             test_dataset.append(json.loads(line))
 
     evaluator_scores = {}
-    evaluator_names = ['ROSCOE-SA', 'ROSCOE-SS', 'gpt3_5_turbo', 'gpt4', 'Math-shepherd_mistral-7b',
-                       'ReasonEval_llama2-7b', 'ReasonEval_wizardmath-7b-v1.0', 'ReasonEval_mistral-7b',
-                       'ReasonEval_llemma-7b', 'ReasonEval_abel-7b-002', 'ReasonEval_wizardmath-7b-v1.1',
-                       'ReasonEval_llemma-34b']
+    evaluator_names = ['roscoe-sa', 'roscoe-ss', 'gpt3_5_turbo', 'gpt4', 'math-shepherd_mistral-7b',
+                       'reasoneval_llama2-7b', 'reasoneval_wizardmath-7b-v1.0', 'reasoneval_mistral-7b',
+                       'reasoneval_llemma-7b', 'reasoneval_abel-7b-002', 'reasoneval_wizardmath-7b-v1.1',
+                       'reasoneval_llemma-34b']
     for name in evaluator_names:
-        score_filepath = './eval_results/MR-GSM8K/' + name + '_eval_results.json'
+        score_filepath = './eval_results/mr-gsm8k/' + name + '_eval_results.json'
         score_results = []
-        if name not in ['gpt3_5_turbo', 'gpt4']:
-            with open(score_filepath) as f:
-                for line in f:
-                    score_results.append(json.loads(line))
-                evaluator_scores[name] = score_results
-        else:
-            with open(score_filepath) as f:
-                for line in f:
-                    score_results.append(json.loads(line))
-            filtered_score_results = []
-            for i in score_results:
-                for j in test_dataset:
-                    if i['uuid'] == j['uuid']:
-                        filtered_score_results.append(i)
-            evaluator_scores[name] = filtered_score_results
+        with open(score_filepath) as f:
+            for line in f:
+                score_results.append(json.loads(line))
+            evaluator_scores[name] = score_results
 
-    evaluator_thresholds = {'Math-shepherd_mistral-7b': 0.5,
-                            'ReasonEval_llama2-7b': 0.5,
-                            'ReasonEval_wizardmath-7b-v1.0': 0.5,
-                            'ReasonEval_mistral-7b': 0.5,
-                            'ReasonEval_llemma-7b': 0.5,
-                            'ReasonEval_abel-7b-002': 0.5,
-                            'ReasonEval_wizardmath-7b-v1.1': 0.5,
-                            'ReasonEval_llemma-34b': 0.5,
-                            'ROSCOE-SA': 0.025,
-                            'ROSCOE-SS': 0.025}
+    evaluator_thresholds = {'math-shepherd_mistral-7b': 0.5,
+                            'reasoneval_llama2-7b': 0.5,
+                            'reasoneval_wizardmath-7b-v1.0': 0.5,
+                            'reasoneval_mistral-7b': 0.5,
+                            'reasoneval_llemma-7b': 0.5,
+                            'reasoneval_abel-7b-002': 0.5,
+                            'reasoneval_wizardmath-7b-v1.1': 0.5,
+                            'reasoneval_llemma-34b': 0.5,
+                            'roscoe-sa': 0.025,
+                            'roscoe-ss': 0.025}
 
     ### solution-level F1 score
     print('**************invalid errors*********solution level**********macro f1 score*******')
@@ -90,9 +79,9 @@ def get_results():
                         correct_false_num += 1
         else:
             for i, j in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     solution_level_score = min(j['scores'])
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     solution_level_score = j['scores']
                 else:
                     new_score_list = [item[2] + item[1] for item in j['scores']]
@@ -118,7 +107,7 @@ def get_results():
         correct_false_num = 0
         total_false_num = 0
         total_true_num = 0
-        if evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['roscoe-sa', 'roscoe-ss']:
             continue
         else:
             for i, j in zip(test_dataset, score_results):
@@ -164,7 +153,7 @@ def get_results():
 
                 else:
                     scores = []
-                    if evaluator_name in ['Math-shepherd_mistral-7b']:
+                    if evaluator_name in ['math-shepherd_mistral-7b']:
                         raw_scores = j['scores']
                     else:
                         raw_scores = [item[2] + item[1] for item in j['scores']]
@@ -196,9 +185,9 @@ def get_results():
             predictions = []
             target = []
             for i, j in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     predictions.append(min(j['scores']))
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     predictions.append(j['scores'])
                 else:
                     predictions.append(min([item[2] + item[1] for item in j['scores']]))
@@ -214,14 +203,14 @@ def get_results():
     ### step-level AUC
     print('**************invalid errors*********step level**********AUC*******')
     for evaluator_name, score_results in evaluator_scores.items():
-        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'roscoe-sa', 'roscoe-ss']:
             continue
         else:
             predictions = []
             target = []
             for i, j in zip(test_dataset, score_results):
                 scores = []
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     raw_scores = j['scores']
                 else:
                     raw_scores = [item[2] + item[1] for item in j['scores']]

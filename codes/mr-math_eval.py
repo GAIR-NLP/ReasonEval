@@ -17,35 +17,34 @@ def calculate_f1_score(correct_true_num, total_true_num, total_false_num, correc
 
 
 def get_results_for_invalid_errors():
-    test_set_filepath = './dataset/MR-MATH_invalid_errors.json'
+    test_set_filepath = './dataset/mr-math_invalid_errors.json'
     test_dataset = []
     with open(test_set_filepath) as f:
         for line in f:
             test_dataset.append(json.loads(line))
 
     score_dict = {}
-    evaluators = ['ROSCOE-SA', 'ROSCOE-SS', 'gpt3_5_turbo', 'gpt4', 'Math-shepherd_mistral-7b', 'ReasonEval_llama2-7b',
-                  'ReasonEval_wizardmath-7b-v1.0', 'ReasonEval_mistral-7b', 'ReasonEval_llemma-7b',
-                  'ReasonEval_abel-7b-002', 'ReasonEval_wizardmath-7b-v1.1', 'ReasonEval_llemma-34b']
+    evaluators = ['roscoe-sa', 'roscoe-ss', 'gpt3_5_turbo', 'gpt4', 'math-shepherd_mistral-7b', 'reasoneval_llama2-7b',
+                  'reasoneval_wizardmath-7b-v1.0', 'reasoneval_mistral-7b', 'reasoneval_llemma-7b',
+                  'reasoneval_abel-7b-002', 'reasoneval_wizardmath-7b-v1.1', 'reasoneval_llemma-34b']
     for evaluator in evaluators:
-        score_filepath = './eval_results/MR-MATH_invalid_errors/' + evaluator + '_eval_results.json'
+        score_filepath = './eval_results/mr-math_invalid_errors/' + evaluator + '_eval_results.json'
         score_results_record = []
         with open(score_filepath) as f:
             for line in f:
                 score_results_record.append(json.loads(line))
         score_dict[evaluator] = score_results_record
 
-    threshold = {'Math-shepherd_mistral-7b': 0.5,
-                 'ReasonEval_llama2-7b': 0.5,
-                 'ReasonEval_wizardmath-7b-v1.0': 0.5,
-                 'ReasonEval_mistral-7b': 0.5,
-                 'ReasonEval_llemma-7b': 0.5,
-                 'ReasonEval_abel-7b-002': 0.5,
-                 'ReasonEval_wizardmath-7b-v1.1': 0.5,
-                 'ReasonEval_llemma-34b': 0.5,
-                 'ROSCOE-SA': 0.025,
-                 'ROSCOE-SS': 0.025}
-
+    threshold = {'math-shepherd_mistral-7b': 0.5,
+                 'reasoneval_llama2-7b': 0.5,
+                 'reasoneval_wizardmath-7b-v1.0': 0.5,
+                 'reasoneval_mistral-7b': 0.5,
+                 'reasoneval_llemma-7b': 0.5,
+                 'reasoneval_abel-7b-002': 0.5,
+                 'reasoneval_wizardmath-7b-v1.1': 0.5,
+                 'reasoneval_llemma-34b': 0.5,
+                 'roscoe-sa': 0.025,
+                 'roscoe-ss': 0.025}
     ### solution-level F1 score
     print('**************invalid errors*********solution level**********macro f1 score*******')
     for evaluator_name, score_results in score_dict.items():
@@ -65,9 +64,9 @@ def get_results_for_invalid_errors():
                         correct_false_num += 1
         else:
             for test_data, score_result in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     solution_level_score = min(score_result['scores'])
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     solution_level_score = score_result['scores']
                 else:
                     new_score_list = [item[2] + item[1] for item in score_result['scores']]
@@ -93,7 +92,7 @@ def get_results_for_invalid_errors():
         correct_false_num = 0
         total_false_num = 0
         total_true_num = 0
-        if evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['roscoe-sa', 'roscoe-ss']:
             continue
         else:
             for test_data, score_result in zip(test_dataset, score_results):
@@ -123,7 +122,7 @@ def get_results_for_invalid_errors():
 
                 else:
                     scores = []
-                    if evaluator_name in ['Math-shepherd_mistral-7b']:
+                    if evaluator_name in ['math-shepherd_mistral-7b']:
                         raw_scores = score_result['scores']
                     else:
                         raw_scores = [item[2] + item[1] for item in score_result['scores']]
@@ -157,9 +156,9 @@ def get_results_for_invalid_errors():
             pred = []
             target = []
             for test_data, score_result in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     pred.append(min(score_result['scores']))
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     pred.append(score_result['scores'])
                 else:
                     pred.append(min([item[2] + item[1] for item in score_result['scores']]))
@@ -175,14 +174,14 @@ def get_results_for_invalid_errors():
     ### step-level AUC
     print('**************invalid errors*********step level**********AUC*******')
     for evaluator_name, score_results in score_dict.items():
-        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'roscoe-sa', 'roscoe-ss']:
             continue
         else:
             pred = []
             target = []
             for test_data, score_result in zip(test_dataset, score_results):
                 scores = []
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     raw_scores = score_result['scores']
                 else:
                     raw_scores = [item[2] + item[1] for item in score_result['scores']]
@@ -204,16 +203,16 @@ def get_results_for_invalid_errors():
 
 
 def get_results_for_redundant_errors():
-    test_set_filepath = './dataset/MR-MATH_redundant_errors.json'
+    test_set_filepath = './dataset/mr-math_redundant_errors.json'
     test_dataset = []
     with open(test_set_filepath) as f:
         for line in f:
             test_dataset.append(json.loads(line))
 
     score_dict = {}
-    evaluators = ['ROSCOE-SA', 'ROSCOE-SS', 'gpt3_5_turbo', 'gpt4', 'Math-shepherd_mistral-7b', 'ReasonEval_llama2-7b',
-                  'ReasonEval_wizardmath-7b-v1.0', 'ReasonEval_mistral-7b', 'ReasonEval_llemma-7b',
-                  'ReasonEval_abel-7b-002', 'ReasonEval_wizardmath-7b-v1.1', 'ReasonEval_llemma-34b']
+    evaluators = ['roscoe-sa', 'roscoe-ss', 'gpt3_5_turbo', 'gpt4', 'math-shepherd_mistral-7b', 'reasoneval_llama2-7b',
+                  'reasoneval_wizardmath-7b-v1.0', 'reasoneval_mistral-7b', 'reasoneval_llemma-7b',
+                  'reasoneval_abel-7b-002', 'reasoneval_wizardmath-7b-v1.1', 'reasoneval_llemma-34b']
     for evaluator in evaluators:
         score_filepath = './eval_results/MR-MATH_redundant_errors/' + evaluator + '_eval_results.json'
         score_results_record = []
@@ -222,16 +221,16 @@ def get_results_for_redundant_errors():
                 score_results_record.append(json.loads(line))
         score_dict[evaluator] = score_results_record
 
-    threshold = {'Math-shepherd_mistral-7b': 0.5,
-                 'ReasonEval_llama2-7b': -0.15,
-                 'ReasonEval_wizardmath-7b-v1.0': -0.15,
-                 'ReasonEval_mistral-7b': -0.15,
-                 'ReasonEval_llemma-7b': -0.15,
-                 'ReasonEval_abel-7b-002': -0.15,
-                 'ReasonEval_wizardmath-7b-v1.1': -0.15,
-                 'ReasonEval_llemma-34b': -0.15,
-                 'ROSCOE-SA': 0.025,
-                 'ROSCOE-SS': 0.025}
+    threshold = {'math-shepherd_mistral-7b': 0.5,
+                 'reasoneval_llama2-7b': -0.15,
+                 'reasoneval_wizardmath-7b-v1.0': -0.15,
+                 'reasoneval_mistral-7b': -0.15,
+                 'reasoneval_llemma-7b': -0.15,
+                 'reasoneval_abel-7b-002': -0.15,
+                 'reasoneval_wizardmath-7b-v1.1': -0.15,
+                 'reasoneval_llemma-34b': -0.15,
+                 'roscoe-sa': 0.025,
+                 'roscoe-ss': 0.025}
 
     ### solution-level F1 score
     print('**************redundant errors*********solution level**********macro f1 score*******')
@@ -252,9 +251,9 @@ def get_results_for_redundant_errors():
                         correct_false_num += 1
         else:
             for test_data, score_result in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     solution_level_score = min(score_result['scores'])
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     solution_level_score = score_result['scores']
                 else:
                     new_score_list = [-item[1] for item in score_result['scores']]
@@ -279,7 +278,7 @@ def get_results_for_redundant_errors():
         correct_false_num = 0
         total_false_num = 0
         total_true_num = 0
-        if evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['roscoe-sa', 'roscoe-ss']:
             continue
         else:
             for test_data, score_result in zip(test_dataset, score_results):
@@ -313,7 +312,7 @@ def get_results_for_redundant_errors():
 
                 else:
                     scores = []
-                    if evaluator_name in ['Math-shepherd_mistral-7b']:
+                    if evaluator_name in ['math-shepherd_mistral-7b']:
                         raw_scores = score_result['scores']
                     else:
                         raw_scores = [-item[1] for item in score_result['scores']]
@@ -344,9 +343,9 @@ def get_results_for_redundant_errors():
             pred = []
             target = []
             for test_data, score_result in zip(test_dataset, score_results):
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     pred.append(min(score_result['scores']))
-                elif evaluator_name in ['ROSCOE-SA', 'ROSCOE-SS']:
+                elif evaluator_name in ['roscoe-sa', 'roscoe-ss']:
                     pred.append(score_result['scores'])
                 else:
                     pred.append(min([-item[1] for item in score_result['scores']]))
@@ -361,14 +360,14 @@ def get_results_for_redundant_errors():
     ### step-level AUC
     print('**************redundant errors*********step level**********AUC*******')
     for evaluator_name, score_results in score_dict.items():
-        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'ROSCOE-SA', 'ROSCOE-SS']:
+        if evaluator_name in ['gpt3_5_turbo', 'gpt4', 'roscoe-sa', 'roscoe-ss']:
             continue
         else:
             pred = []
             target = []
             for i,j in zip(test_dataset,score_results):
                 scores = []
-                if evaluator_name in ['Math-shepherd_mistral-7b']:
+                if evaluator_name in ['math-shepherd_mistral-7b']:
                     raw_scores = j['scores']
                 else:
                     raw_scores = [- item[1] for item in j['scores']]
