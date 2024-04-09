@@ -1,5 +1,5 @@
 # Evaluating Mathematical Reasoning Beyond Accuracy
-This repository presents the open-source resource associated with the paper [Evaluating Mathematical Reasoning Beyond Accuracy](). Specifically, we release the best-performing model, meta-evaluation script, and all evaluation results.
+This repository presents the open-source resource associated with the paper [Evaluating Mathematical Reasoning Beyond Accuracy](https://arxiv.org/pdf/2404.05692.pdf). Specifically, we release the best-performing model, meta-evaluation script, and all evaluation results.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -216,5 +216,10 @@ python ./codes/mr-math_eval.py --error_type redundant
 ### Citation
 Please cite the paper if the resource in this repo or the paper is helpful to you.
 ```
-
+@article{xia2024evaluating,
+        title={Evaluating Mathematical Reasoning Beyond Accuracy}, 
+        author={Xia, Shijie and Li, Xuefeng and Liu, Yixin and Wu, Tongshuang and Liu, Pengfei},
+        journal={arXiv preprint arXiv:2404.05692},
+        year={2024},
+}
 ```
