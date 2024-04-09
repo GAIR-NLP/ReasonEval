@@ -214,7 +214,7 @@ def get_results_for_redundant_errors():
                   'reasoneval_wizardmath-7b-v1.0', 'reasoneval_mistral-7b', 'reasoneval_llemma-7b',
                   'reasoneval_abel-7b-002', 'reasoneval_wizardmath-7b-v1.1', 'reasoneval_llemma-34b']
     for evaluator in evaluators:
-        score_filepath = './eval_results/MR-MATH_redundant_errors/' + evaluator + '_eval_results.json'
+        score_filepath = './eval_results/mr-math_redundant_errors/' + evaluator + '_eval_results.json'
         score_results_record = []
         with open(score_filepath) as f:
             for line in f:
