@@ -1,6 +1,10 @@
 # Evaluating Mathematical Reasoning Beyond Accuracy
 This repository presents the open-source resource associated with the paper [Evaluating Mathematical Reasoning Beyond Accuracy](https://arxiv.org/pdf/2404.05692.pdf). Specifically, we release the best-performing model, meta-evaluation script, and all evaluation results.
 
+## News
+
+- [2024/12] Our paper has been accepted by AAAI 2025 as an oral presentation 🎉
+
 ## Table of Contents
 - [Introduction](#introduction)
 - [Quick Start](#quick-start)
