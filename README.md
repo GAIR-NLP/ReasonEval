@@ -217,6 +217,12 @@ python ./codes/mr-math_eval.py --error_type invalid
 python ./codes/mr-math_eval.py --error_type redundant
 ```
 
+
+### License
+The MR-MATH dataset and the ReasonEval-34B model are released under the [Apache License 2.0](https://www.apache.org/licenses/). The ReasonEval-7B model is released under the [Llama 2 license](https://ai.meta.com/resources/models-and-libraries/llama-downloads/).
+
+
+
 ### Citation
 Please cite the paper if the resource in this repo or the paper is helpful to you.
 ```
